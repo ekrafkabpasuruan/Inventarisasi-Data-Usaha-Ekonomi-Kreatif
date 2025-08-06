@@ -1,0 +1,457 @@
+import streamlit as st
+import pandas as pd
+import altair as alt
+import requests
+import io
+import re
+
+# --- KONFIGURASI HALAMAN ---
+st.set_page_config(
+    page_title="DISPAR KAB. PASURUAN",
+    layout="wide",
+    page_icon="https://i.pinimg.com/736x/34/e4/ba/34e4baa62df5cfe22ccb43f43567978d.jpg" 
+)
+
+# --- STYLING CSS KUSTOM ---
+st.markdown("""
+    <style>
+    .stApp {
+        background-color: #f0fdf4; 
+    }
+    .main {
+        background-color: #f9fff9; 
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Judul */
+    h1, h2, h3, h4 {
+        color: #00695c; 
+        font-family: 'Segoe UI', sans-serif;
+        font-weight: 600;
+    }
+
+    /* Subheader dan Keterangan */
+    .st-emotion-cache-10qnfpr 
+        color: #004d40; 
+        font-weight: 500;
+    }
+    .st-emotion-cache-nahz7x 
+        color: #333333; 
+        font-style: italic;
+    }
+
+    /* Label Selectbox, FileUploader, dan TextInput */
+    .stSelectbox label, .stFileUploader label, .stTextInput label {
+        font-weight: 600;
+        color: #004d40;
+    }
+
+    /* Teks Checkbox */
+    .stCheckbox > div {
+        font-weight: 400;
+        color: #004d40;
+    }
+
+    /* Padding kontainer blok */
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    /* Styling metrik */
+    [data-testid="stMetric"] {
+        background-color: #e0f2f1; 
+        border-radius: 8px;
+        padding: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        text-align: center;
+    }
+    [data-testid="stMetric"] > div > div:nth-child(1) {
+        font-size: 1.1em;
+        color: #004d40;
+        font-weight: 600;
+    }
+    [data-testid="stMetric"] > div > div:nth-child(3) {
+        font-size: 2.5em;
+        color: #00695c;
+        font-weight: 700;
+    }
+
+    /* Styling expander */
+    .streamlit-expanderHeader {
+        background-color: #b2dfdb; 
+        color: #004d40;
+        font-weight: 600;
+        border-radius: 5px;
+        padding: 0.5rem 1rem;
+        margin-bottom: 0.5rem;
+    }
+    .streamlit-expanderContent {
+        background-color: #e0f2f1;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        padding: 1rem;
+    }
+
+    /* Styling dataframe */
+    .stDataFrame {
+        border: 1px solid #b2dfdb;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    .st-emotion-cache-1c7y2kd p { 
+        background-color: #e8f5e9; 
+        color: #2e7d32; 
+        border-left: 5px solid #66bb6a; 
+        padding: 10px;
+        border-radius: 5px;
+    }
+    .st-emotion-cache-1ldn2y5 p { 
+        background-color: #fffde7; 
+        color: #ffb300; 
+        border-left: 5px solid #ffd54f; 
+        padding: 10px;
+        border-radius: 5px;
+    }
+    .st-emotion-cache-12fmj2r p { 
+        background-color: #ffebee; 
+        color: #d32f2f; 
+        border-left: 5px solid #ef5350; 
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    img {
+        width: 100%;
+        height: auto; 
+    }
+
+    </style>
+""", unsafe_allow_html=True)
+
+# --- BAGIAN HEADER ---
+col1, col2 = st.columns([0.15, 0.85])
+with col1:
+    st.image ("https://i.pinimg.com/736x/34/e4/ba/34e4baa62df5cfe22ccb43f43567978d.jpg", width=550)
+with col2:
+    st.title("DINAS PARIWISATA KAB. PASURUAN")
+    st.subheader("Inventarisasi Data Usaha Ekonomi Kreatif")
+    st.caption("✨ Visualisasi & Pemetaan Usaha Masyarakat di Kabupaten Pasuruan")
+
+st.markdown("---") 
+
+file_ids = {
+    '1kUQIxE6-beZulQLv-ZwzbujIdhjxtT_B': 'KULINER',
+    '1FQAo6shJhvTCMCfK57W-xi4yqcudcgNz': 'MUSIK',
+    '1oP6IwzDosaP4qofPpDGiUpgBumcHcofY': 'PENERBITAN',
+    '1SnWcC0ISKS7avbooIeg5dqz97mY45ydG': 'PENGEMBANG PERMAINAN',
+    '1cB9xFsrg_9bgHo4YK1J_OxdjjpdyULM_': 'PERIKLANAN',
+    '1HGr4sxrIBmpiIBgKswEv0riR9ItkQvST': 'SENI PERTUNJUKAN',
+    '1sEWP3mBIfuzQSa8f_XqVx_FJw2u6Mal6': 'SENI RUPA',
+    '1QnBGnU_vRWBQN3_zjpLmw073cqQrUdkc': 'TELEVISI & RADIO',
+    '1d1slXI7e92x2uBQbS477UPW3kmhSZGmY': 'ARSITEKTUR',
+    '1004nMzfSA_2u0tsHCT0vRfR2DsLRDscq': 'DESAIN INTERIOR',
+    '1UIpnYknfYsay_y3_BIdM0ST4j8N2eW0V': 'DESAIN KOMUNIKASI VISUAL',
+    '1bED3JEIZPF5E1kMT7YJmgJHWHazlrc1r': 'DESAIN PRODUK',
+    '10G_uWdOrCHACyPXnxJ73nH2OF7x1S1i8': 'FASHION',
+    '18WffL9Z4s9IQIt325K02q4Vkc-KnoIpV': 'FILM, ANIMASI, VIDEO',
+    '1upaDVhBb6pI72YkrbvPLXKopAO4mUBu4': 'FOTOGRAFI',
+    '1IkQQ6Crqdc5ei3U2zCW90ULfcDbpfs1N': 'KRIYA',
+    '1OfkA--rGJmyZqUf8Qhhw_EwjJDFV5oL1': 'APLIKASI',
+}
+
+# --- FUNGSI EKSTRAKSI & PEMUATAN DATA ---
+def ekstrak_kecamatan(alamat):
+    """Mengekstrak nama kecamatan dari string alamat."""
+    if isinstance(alamat, str):
+        match = re.search(r'\bKec(?:amatan)?\.?\s+([A-Za-z\s]+?)(?:,|\.|$)', alamat, re.IGNORECASE)
+        if match:
+            return match.group(1).strip().upper()
+    return "TIDAK DIKETAHUI"
+
+@st.cache_data(show_spinner=True)
+def load_data_from_drive(file_id, subsektor):
+    """Memuat file CSV dari Google Drive dan memprosesnya."""
+    url = f"https://drive.google.com/uc?export=download&id={file_id}"
+    
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status() # Menimbulkan HTTPError untuk respons yang buruk (4xx atau 5xx)
+    except requests.exceptions.RequestException as e:
+        st.error(f"Koneksi gagal saat mengunduh data untuk subsektor **{subsektor}**: {e}")
+        return pd.DataFrame() # Mengembalikan DataFrame kosong jika gagal
+
+    # Membaca CSV, melewati baris awal (asumsi metadata/header)
+    df = pd.read_csv(io.StringIO(response.content.decode('utf-8')), skiprows=3)
+
+    current_cols = df.columns.tolist()
+    
+    # Mendefinisikan kolom "Unnamed" yang diharapkan dan nama baru yang diinginkan
+    expected_unnamed_cols = {
+        'Unnamed: 0': "NAMA USAHA",
+        'Unnamed: 1': "ALAMAT",
+        'Unnamed: 2': "KONTAK",
+        'Unnamed: 4': "TENAGA KERJA LAKI",
+        'Unnamed: 5': "TENAGA KERJA PEREMPUAN",
+        'Unnamed: 6': "TENAGA KERJA TOTAL",
+        'Unnamed: 15': "SUBSEKTOR",
+        'Unnamed: 16': "JENIS USAHA"
+    }
+
+    rename_mapping = {}
+    for original, new in expected_unnamed_cols.items():
+        if original in current_cols:
+            rename_mapping[original] = new
+    
+    df.rename(columns=rename_mapping, inplace=True)
+
+    # Memastikan kolom yang diperlukan ada sebelum memilih
+    required_cols = ["NAMA USAHA", "ALAMAT", "SUBSEKTOR", "JENIS USAHA"]
+    if 'TENAGA KERJA TOTAL' not in required_cols and 'Unnamed: 6' in expected_unnamed_cols:
+        required_cols.append('TENAGA KERJA TOTAL')
+
+    # Memfilter kolom untuk hanya menyertakan yang ada dan diperlukan
+    df = df[[col for col in required_cols if col in df.columns]].copy()
+    
+    df['SUBSEKTOR'] = subsektor 
+
+    # Mengekstrak kecamatan dari 'ALAMAT'
+    if 'ALAMAT' in df.columns:
+        df['KECAMATAN'] = df['ALAMAT'].apply(ekstrak_kecamatan)
+    else:
+        df['KECAMATAN'] = 'TIDAK DIKETAHUI'
+
+    return df
+
+# --- MEMUAT SEMUA DATA ---
+df_list = []
+with st.spinner("Memuat data usaha ekonomi kreatif..."):
+    for file_id, subsektor in file_ids.items():
+        df = load_data_from_drive(file_id, subsektor)
+        if not df.empty:
+            df_list.append(df)
+
+if not df_list:
+    st.error("❌ Gagal memuat data utama. Mohon periksa kembali koneksi internet atau File ID Google Drive Anda.")
+    st.stop()
+
+df_all = pd.concat(df_list, ignore_index=True)
+
+# --- PEMBERSIHAN DATA ---
+# Menghapus baris di mana 'NAMA USAHA' atau 'ALAMAT' adalah nilai placeholder atau null
+if 'NAMA USAHA' in df_all.columns and 'ALAMAT' in df_all.columns:
+    rows_to_remove = (
+        (df_all['NAMA USAHA'].astype(str).str.upper().isin(['NAMA USAHA', 'NONE', 'NAN', ''])) |
+        (df_all['ALAMAT'].astype(str).str.upper().isin(['ALAMAT', 'NONE', 'NAN', ''])) |
+        (df_all['NAMA USAHA'].isnull()) |
+        (df_all['ALAMAT'].isnull())
+    )
+    df_all = df_all[~rows_to_remove].copy()
+    df_all.reset_index(drop=True, inplace=True)
+else:
+    st.warning("Kolom 'NAMA USAHA' atau 'ALAMAT' tidak ditemukan, sehingga tidak dapat membersihkan baris placeholder.")
+
+# --- VALIDASI AWAL ---
+if df_all.empty:
+    st.error("❗ Tidak ada data yang valid ditemukan setelah pembersihan. Pastikan format file benar.")
+    st.stop()
+
+if 'KECAMATAN' not in df_all.columns or df_all['KECAMATAN'].isnull().all():
+    st.error("Kolom 'KECAMATAN' tidak ditemukan atau kosong setelah pemrosesan data. Pemetaan tidak dapat dilakukan.")
+    st.stop()
+if 'SUBSEKTOR' not in df_all.columns or df_all['SUBSEKTOR'].isnull().all():
+    st.error("Kolom 'SUBSEKTOR' tidak ditemukan atau kosong setelah pemrosesan data. Filter tidak dapat digunakan.")
+    st.stop()
+
+# --- TATA LETAK FILTER DAN METRIK ---
+st.header("📊 Analisis Data Usaha Kreatif")
+
+filter_col1, filter_col2 = st.columns(2)
+
+with filter_col1:
+    all_kecamatan_options = sorted(df_all['KECAMATAN'].dropna().unique().tolist())
+    selected_kecamatan = st.selectbox(
+        "📍 Pilih Kecamatan",
+        options=['Semua Kecamatan'] + all_kecamatan_options,
+        help="Pilih kecamatan untuk memfilter data dan grafik."
+    )
+
+with filter_col2:
+    all_subsektor_options = sorted(df_all['SUBSEKTOR'].unique().tolist())
+    selected_subsektor = st.selectbox(
+        "🎨 Pilih Subsektor",
+        options=['(Semua Subsektor)'] + all_subsektor_options,
+        help="Pilih subsektor untuk memfilter data dan grafik."
+    )
+
+# --- FILTER DATA BERDASARKAN PILIHAN ---
+filtered_df = df_all.copy()
+
+if selected_kecamatan != 'Semua Kecamatan':
+    filtered_df = filtered_df[filtered_df['KECAMATAN'] == selected_kecamatan]
+
+if selected_subsektor != '(Semua Subsektor)':
+    filtered_df = filtered_df[filtered_df['SUBSEKTOR'] == selected_subsektor]
+
+st.markdown("---")
+
+# --- MENAMPILKAN METRIK ---
+if filtered_df.empty:
+    st.warning("⚠️ Tidak ada data yang cocok dengan pilihan filter Anda. Coba pilih filter lain.")
+else:
+    st.subheader("Ringkasan Data Terfilter")
+    metric_col1, metric_col2 = st.columns(2)
+    
+    with metric_col1:
+        total_usaha_filtered = len(filtered_df)
+        st.metric("Total Usaha Terdata", f"{total_usaha_filtered:,}")
+    
+    with metric_col2:
+        total_tenaga_kerja_filtered = 0
+        if 'TENAGA KERJA TOTAL' in filtered_df.columns:
+            total_tenaga_kerja_filtered = pd.to_numeric(filtered_df["TENAGA KERJA TOTAL"], errors="coerce").fillna(0).sum()
+        else:
+            st.info("ℹ️ Kolom 'TENAGA KERJA TOTAL' tidak tersedia untuk perhitungan tenaga kerja.")
+        st.metric("Total Tenaga Kerja", f"{int(total_tenaga_kerja_filtered):,} orang")
+
+    st.markdown("---")
+
+    # --- MENAMPILKAN DATA TERFILTER ---
+    with st.expander(f"📋 **Lihat Detail Data Usaha Ekonomi Kreatif**"):
+        st.dataframe(
+            filtered_df[['NAMA USAHA', 'ALAMAT', 'KECAMATAN', 'SUBSEKTOR', 'JENIS USAHA', 'TENAGA KERJA TOTAL']].reset_index(drop=True),
+            use_container_width=True,
+            height=300
+        )
+
+    st.markdown("---")
+
+    # --- JENIS USAHA PALING DOMINAN ---
+    st.subheader("🏆 Jenis Usaha Paling Dominan")
+    if 'JENIS USAHA' in filtered_df.columns and not filtered_df['JENIS USAHA'].empty:
+        dominan_df = (
+            filtered_df.groupby("JENIS USAHA")
+            .size()
+            .reset_index(name="JUMLAH")
+            .sort_values(by="JUMLAH", ascending=False)
+        )
+
+        if not dominan_df.empty:
+            jenis_terbanyak = dominan_df.iloc[0]
+            st.success(
+                f"Jenis usaha paling dominan di **{selected_kecamatan if selected_kecamatan != 'Semua Kecamatan' else 'Kabupaten Pasuruan'}** "
+                f"(Subsektor: {selected_subsektor if selected_subsektor != '(Semua Subsektor)' else 'Semua'}) adalah "
+                f"**{jenis_terbanyak['JENIS USAHA']}** dengan jumlah **{jenis_terbanyak['JUMLAH']} usaha**."
+            )
+            
+            with st.expander("📊 Grafik Distribusi Jenis Usaha"):
+                bars = alt.Chart(dominan_df.head(10)).mark_bar().encode(
+                    x=alt.X('JUMLAH:Q', title='Jumlah Usaha'),
+                    y=alt.Y('JENIS USAHA:N', sort='-x', title='Jenis Usaha'),
+                    tooltip=['JENIS USAHA', 'JUMLAH'],
+                    color=alt.value("#26a69a")
+                )
+                text = bars.mark_text(
+                    align='left', 
+                    baseline='middle',
+                    dx=3
+                ).encode(
+                    text=alt.Text('JUMLAH:Q'),
+                    color=alt.value('black')
+                )
+                chart_jenis_usaha = (bars + text).properties(
+                    title=f"Top 10 Jenis Usaha di {selected_kecamatan} ({selected_subsektor})"
+                ).interactive()
+                st.altair_chart(chart_jenis_usaha, use_container_width=True)
+
+    else:
+        st.info("ℹ️ Kolom 'JENIS USAHA' tidak ditemukan atau kosong. Fitur ini tidak dapat ditampilkan.")
+    
+    st.markdown("---")
+
+# --- GRAFIK DISTRIBUSI ---
+st.subheader("📈 Distribusi Usaha Berdasarkan Wilayah dan Sektor")
+
+chart_col1, chart_col2 = st.columns(2)
+
+with chart_col1:
+    if selected_subsektor == '(Semua Subsektor)' and not filtered_df.empty:
+        st.markdown(f"#### Jumlah Usaha per Subsektor di {selected_kecamatan}")
+        subsektor_counts = filtered_df['SUBSEKTOR'].value_counts().reset_index()
+        subsektor_counts.columns = ['Subsektor', 'Jumlah Usaha']
+        
+        total_usaha_subsektor = subsektor_counts['Jumlah Usaha'].sum()
+        subsektor_counts['Persentase'] = (subsektor_counts['Jumlah Usaha'] / total_usaha_subsektor)
+        
+        subsektor_counts['Subsektor & Persen'] = subsektor_counts.apply(
+            lambda row: f"{row['Subsektor']} ({row['Persentase']:.1%})", axis=1
+        )
+
+        pie_subsektor = alt.Chart(subsektor_counts).mark_arc(outerRadius=120).encode(
+            theta=alt.Theta("Jumlah Usaha:Q", stack=True),
+            color=alt.Color(
+                "Subsektor & Persen:N", 
+                title="Subsektor", 
+                legend=alt.Legend(orient="bottom", columns=2, labelColor="black")
+            ),
+            order=alt.Order("Persentase", sort="ascending"), 
+            tooltip=[
+                alt.Tooltip("Subsektor", title="Subsektor"),
+                alt.Tooltip("Jumlah Usaha", title="Jumlah Usaha"),
+                alt.Tooltip("Persentase", format=".1%", title="Persentase")
+            ]
+        ).properties(
+            title=f"Distribusi Usaha Berdasarkan Subsektor di {selected_kecamatan}"
+        ).interactive()
+        
+        st.altair_chart(pie_subsektor, use_container_width=True)
+        
+    elif selected_subsektor != '(Semua Subsektor)':
+        st.info(f"Untuk melihat grafik 'Jumlah Usaha per Subsektor', pilih '**(Semua Subsektor)**' di filter subsektor.")
+
+
+with chart_col2:
+    if selected_kecamatan == 'Semua Kecamatan' and not filtered_df.empty:
+        st.markdown(f"#### Jumlah Usaha per Kecamatan untuk Subsektor {selected_subsektor}")
+        kecamatan_counts = filtered_df['KECAMATAN'].value_counts().reset_index()
+        kecamatan_counts.columns = ['Kecamatan', 'Jumlah Usaha']
+        
+        total_usaha_kecamatan = kecamatan_counts['Jumlah Usaha'].sum()
+        kecamatan_counts['Persentase'] = (kecamatan_counts['Jumlah Usaha'] / total_usaha_kecamatan)
+
+        kecamatan_counts['Kecamatan & Persen'] = kecamatan_counts.apply(
+            lambda row: f"{row['Kecamatan']} ({row['Persentase']:.1%})", axis=1
+        )
+
+        pie_kecamatan = alt.Chart(kecamatan_counts).mark_arc(outerRadius=120).encode(
+            theta=alt.Theta("Jumlah Usaha:Q", stack=True),
+            color=alt.Color(
+                "Kecamatan & Persen:N", 
+                title="Kecamatan", 
+                legend=alt.Legend(orient="bottom", columns=3, titleLimit=300, symbolLimit=50, labelColor="black")
+            ),
+            order=alt.Order("Persentase", sort="ascending"), 
+            tooltip=[
+                alt.Tooltip("Kecamatan", title="Kecamatan"),
+                alt.Tooltip("Jumlah Usaha", title="Jumlah Usaha"),
+                alt.Tooltip("Persentase", format=".1%", title="Persentase")
+            ]
+        ).properties(
+            title=f"Distribusi Usaha Berdasarkan Kecamatan untuk Subsektor {selected_subsektor}"
+        ).interactive()
+        
+        st.altair_chart(pie_kecamatan, use_container_width=True)
+        
+    elif selected_kecamatan != 'Semua Kecamatan':
+        st.info(f"Untuk melihat grafik 'Jumlah Usaha per Kecamatan', pilih '**Semua Kecamatan**' di filter kecamatan.")
+
+
+# --- FOOTER ---
+st.markdown("---")
+st.markdown("Aplikasi ini dikembangkan oleh Dinas Pariwisata Kabupaten Pasuruan untuk mempromosikan dan memetakan Usaha Ekonomi Kreatif di wilayah Kabupaten Pasuruan.")
+st.markdown("Kontak: [dispar.pasuruan@example.com](mailto:dispar.pasuruan@example.com)")
