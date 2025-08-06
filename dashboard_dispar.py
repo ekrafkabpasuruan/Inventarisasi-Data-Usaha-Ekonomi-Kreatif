@@ -359,7 +359,7 @@ else:
                 text = bars.mark_text(
                     align='left', 
                     baseline='middle',
-                    dx=3
+                    dx=2
                 ).encode(
                     text=alt.Text('JUMLAH:Q'),
                     color=alt.value('black')
@@ -454,4 +454,5 @@ with chart_col2:
 # --- FOOTER ---
 st.markdown("---")
 st.markdown("Aplikasi ini dikembangkan oleh Dinas Pariwisata Kabupaten Pasuruan untuk mempromosikan dan memetakan Usaha Ekonomi Kreatif di wilayah Kabupaten Pasuruan.")
+
 
