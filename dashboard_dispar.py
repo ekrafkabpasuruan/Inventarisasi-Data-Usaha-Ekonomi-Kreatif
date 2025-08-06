@@ -433,7 +433,7 @@ with chart_col2:
             color=alt.Color(
                 "Kecamatan & Persen:N", 
                 title="Kecamatan", 
-                legend=alt.Legend(orient="bottom", columns=3, titleLimit=300, symbolLimit=50, labelColor="black")
+                legend=alt.Legend(orient="bottom", columns=2, titleLimit=300, symbolLimit=50, labelColor="black")
             ),
             order=alt.Order("Persentase", sort="ascending"), 
             tooltip=[
@@ -454,3 +454,4 @@ with chart_col2:
 # --- FOOTER ---
 st.markdown("---")
 st.markdown("Aplikasi ini dikembangkan oleh Dinas Pariwisata Kabupaten Pasuruan untuk mempromosikan dan memetakan Usaha Ekonomi Kreatif di wilayah Kabupaten Pasuruan.")
+
