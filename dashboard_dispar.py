@@ -357,12 +357,12 @@ else:
                     color=alt.value("#26a69a")
                 )
                 text = bars.mark_text(
-                    align='left', 
+                    align='right', 
                     baseline='middle',
-                    dx=10
+                    dx=-8
                 ).encode(
                     text=alt.Text('JUMLAH:Q'),
-                    color=alt.value('black')
+                    color=alt.value('white')
                 )
                 chart_jenis_usaha = (bars + text).properties(
                     title=f"Top 10 Jenis Usaha di {selected_kecamatan} ({selected_subsektor})"
