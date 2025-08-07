@@ -451,9 +451,6 @@ else:
         elif selected_kecamatan != 'Semua Kecamatan':
             st.info(f"Untuk melihat grafik 'Jumlah Usaha per Kecamatan', pilih '**Semua Kecamatan**' di filter kecamatan.")
 
-# --- FOOTER ---
-st.markdown("---")
-st.markdown("Aplikasi ini dikembangkan oleh Dinas Pariwisata Kabupaten Pasuruan untuk mempromosikan dan memetakan Usaha Ekonomi Kreatif di wilayah Kabupaten Pasuruan.")
 
 # --- BAGIAN VIDEO INTERAKTIF (GOOGLE DRIVE) ---
 st.markdown("---")
@@ -461,19 +458,44 @@ st.subheader("📽️ Video Profil Ekonomi Kreatif")
 
 # Daftar video Google Drive yang dikelompokkan berdasarkan subsektor
 video_list = {
-    "Pilih Subsektor...": None, # Opsi default
-    "KULINER": {
-        "Aneka Jajanan Khas": "https://drive.google.com/file/d/1o_LHmFlx5uhAHp3iII7FJ5xH-T4rbrDQ/view?usp=sharing/preview",
-        "Resep Makanan Legendaris": "https://drive.google.com/file/d/VIDEO_ID_LAIN_ANDA/preview",
-        "Festival Kuliner Pasuruan": "https://drive.google.com/file/d/VIDEO_ID_LAIN_ANDA/preview"
+    "Pilih Subsektor...": None, 
+    "MONEV": {
+        "29-juli-2025": "https://drive.google.com/file/d/1o_LHmFlx5uhAHp3iII7FJ5xH-T4rbrDQ/preview",
     },
-    "KRIYA": {
-        "Kerajinan Batik Pasuruan": "https://drive.google.com/file/d/VIDEO_ID_LAIN_ANDA/preview",
-        "Cara Membuat Keramik": "https://drive.google.com/file/d/VIDEO_ID_LAIN_ANDA/preview"
+    "APLIKASI": {
+    },
+    "ARSITEKTUR": {
+    },
+    "DESAIN INTERIOR": {
+    },
+    "DESAIN KOMUNIKASI VISUAL": {
+    },
+    "DESAIN PRODUK": {
     },
     "FASHION": {
-        "Tren Busana Muslim Lokal": "https://drive.google.com/file/d/VIDEO_ID_LAIN_ANDA/preview"
-    }
+    },
+    "FILM, ANIMASI, VIDEO": {
+    },
+    "FOTOGRAFI": {
+    },
+    "KRIYA": {
+    },
+    "KULINER": {
+    },
+    "MUSIK": {
+    },
+    "PENERBITAN": {
+    },
+    "PENGEMBANG PERMAINAN": {
+    },
+    "PERIKLANAN": {
+    },
+    "SENI PERTUNJUKAN": {
+    },
+    "SENI RUPA": {
+    },
+    "TELEVISI & RADIO": {
+    },
 }
 
 # Selectbox pertama untuk memilih subsektor
@@ -506,5 +528,5 @@ else:
     st.info("Silakan pilih subsektor untuk melihat daftar video yang tersedia.")
 
 st.markdown("---")
-st.markdown("### <div style='text-align: center; color: #00695c;'>Link Pendaftaran Usaha</div>", unsafe_allow_html=True)
-st.markdown("### <div style='text-align: center;'><a href='https://forms.gle/uQYKcZYwEPzyadKZA'>https://forms.gle/uQYKcZYwEPzyadKZA</a></div>", unsafe_allow_html=True)
+st.markdown("Aplikasi ini dikembangkan oleh Dinas Pariwisata Kabupaten Pasuruan untuk mempromosikan dan memetakan Usaha Ekonomi Kreatif di wilayah Kabupaten Pasuruan.")
+st.markdown("##### Link Pendaftaran Ekonomi Kreatif: https://forms.gle/uQYKcZYwEPzyadKZA")
