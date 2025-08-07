@@ -127,18 +127,60 @@ st.markdown("""
         border-radius: 5px;
     }
 
-    img {
+    /* Tambahkan CSS responsif untuk gambar */
+    .logo-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         width: 100%;
-        height: auto; 
+    }
+    .logo-container img {
+        max-width: 150px; /* Batasi lebar maksimum logo */
+        height: auto;
+    }
+    
+    /* Media query untuk layar kecil */
+    @media (max-width: 768px) {
+        .logo-container img {
+            max-width: 100px;
+        }
+    }
+
+    /* Tambahkan CSS responsif untuk video */
+    .video-container {
+        position: relative;
+        width: 100%;
+        padding-bottom: 56.25%; /* Rasio aspek 16:9 */
+        height: 0;
+        overflow: hidden;
+        margin: auto; /* Pusatkan video */
+    }
+    .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+    
+    /* Keterangan di footer agar responsif */
+    .st-emotion-cache-17lsv9n {
+        text-align: center !important;
     }
 
     </style>
 """, unsafe_allow_html=True)
 
 # --- BAGIAN HEADER ---
-col1, col2 = st.columns([0.15, 0.85])
+# Ubah rasio kolom menjadi fleksibel
+col1, col2 = st.columns([0.2, 0.8])
 with col1:
-    st.image ("https://i.pinimg.com/736x/34/e4/ba/34e4baa62df5cfe22ccb43f43567978d.jpg", width=550)
+    # Gunakan HTML dan CSS untuk logo agar responsif
+    st.markdown("""
+        <div class="logo-container">
+            <img src="https://i.pinimg.com/736x/34/e4/ba/34e4baa62df5cfe22ccb43f43567978d.jpg" alt="Logo DISPAR KAB. PASURUAN">
+        </div>
+    """, unsafe_allow_html=True)
 with col2:
     st.title("DINAS PARIWISATA KAB. PASURUAN")
     st.subheader("Inventarisasi Data Usaha Ekonomi Kreatif")
@@ -333,7 +375,7 @@ else:
     st.markdown("---")
 
     # --- JENIS USAHA PALING DOMINAN ---
-    st.subheader("🏆 Jenis Usaha Paling Dominan")
+    st.subheader("🏆 Jenis Usaha Paling Domina")
     if 'JENIS USAHA' in filtered_df.columns and not filtered_df['JENIS USAHA'].empty:
         dominan_df = (
             filtered_df.groupby("JENIS USAHA")
@@ -516,12 +558,12 @@ if selected_subsektor_video and video_list[selected_subsektor_video]:
     selected_url = video_list[selected_subsektor_video][selected_video_title]
     
     st.markdown(f"#### {selected_video_title}")
-    # Menggunakan st.components.v1.html untuk menampilkan iframe
+    # Menggunakan st.components.v1.html dengan kontainer responsif
     components.html(f"""
-        <div style="text-align: center;">
-            <iframe src="{selected_url}" width="640" height="360" frameborder="0" allowfullscreen></iframe>
+        <div class="video-container">
+            <iframe src="{selected_url}" frameborder="0" allowfullscreen></iframe>
         </div>
-    """, height=400)
+    """, height=0)
     st.caption(f"Ini adalah video profil tentang {selected_video_title}.")
 
 else:
