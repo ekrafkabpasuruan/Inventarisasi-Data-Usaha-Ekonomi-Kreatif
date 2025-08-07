@@ -4,6 +4,7 @@ import altair as alt
 import requests
 import io
 import re
+import streamlit.components.v1 as components
 
 # --- KONFIGURASI HALAMAN ---
 st.set_page_config(
@@ -33,11 +34,11 @@ st.markdown("""
     }
 
     /* Subheader dan Keterangan */
-    .st-emotion-cache-10qnfpr 
+    .st-emotion-cache-10qnfpr {
         color: #004d40; 
         font-weight: 500;
     }
-    .st-emotion-cache-nahz7x 
+    .st-emotion-cache-nahz7x {
         color: #333333; 
         font-style: italic;
     }
@@ -212,7 +213,7 @@ def load_data_from_drive(file_id, subsektor):
 
     # Memastikan kolom yang diperlukan ada sebelum memilih
     required_cols = ["NAMA USAHA", "ALAMAT", "SUBSEKTOR", "JENIS USAHA"]
-    if 'TENAGA KERJA TOTAL' not in required_cols and 'Unnamed: 6' in expected_unnamed_cols:
+    if 'TENAGA KERJA TOTAL' in df.columns:
         required_cols.append('TENAGA KERJA TOTAL')
 
     # Memfilter kolom untuk hanya menyertakan yang ada dan diperlukan
@@ -374,86 +375,136 @@ else:
     
     st.markdown("---")
 
-# --- GRAFIK DISTRIBUSI ---
-st.subheader("📈 Distribusi Usaha Berdasarkan Wilayah dan Sektor")
+    # --- GRAFIK DISTRIBUSI ---
+    st.subheader("📈 Distribusi Usaha Berdasarkan Wilayah dan Sektor")
 
-chart_col1, chart_col2 = st.columns(2)
+    chart_col1, chart_col2 = st.columns(2)
 
-with chart_col1:
-    if selected_subsektor == '(Semua Subsektor)' and not filtered_df.empty:
-        st.markdown(f"#### Jumlah Usaha per Subsektor di {selected_kecamatan}")
-        subsektor_counts = filtered_df['SUBSEKTOR'].value_counts().reset_index()
-        subsektor_counts.columns = ['Subsektor', 'Jumlah Usaha']
-        
-        total_usaha_subsektor = subsektor_counts['Jumlah Usaha'].sum()
-        subsektor_counts['Persentase'] = (subsektor_counts['Jumlah Usaha'] / total_usaha_subsektor)
-        
-        subsektor_counts['Subsektor & Persen'] = subsektor_counts.apply(
-            lambda row: f"{row['Subsektor']} ({row['Persentase']:.1%})", axis=1
-        )
+    with chart_col1:
+        if selected_subsektor == '(Semua Subsektor)' and not filtered_df.empty:
+            st.markdown(f"#### Jumlah Usaha per Subsektor di {selected_kecamatan}")
+            subsektor_counts = filtered_df['SUBSEKTOR'].value_counts().reset_index()
+            subsektor_counts.columns = ['Subsektor', 'Jumlah Usaha']
+            
+            total_usaha_subsektor = subsektor_counts['Jumlah Usaha'].sum()
+            subsektor_counts['Persentase'] = (subsektor_counts['Jumlah Usaha'] / total_usaha_subsektor)
+            
+            subsektor_counts['Subsektor & Persen'] = subsektor_counts.apply(
+                lambda row: f"{row['Subsektor']} ({row['Persentase']:.1%})", axis=1
+            )
 
-        pie_subsektor = alt.Chart(subsektor_counts).mark_arc(outerRadius=120).encode(
-            theta=alt.Theta("Jumlah Usaha:Q", stack=True),
-            color=alt.Color(
-                "Subsektor & Persen:N", 
-                title="Subsektor", 
-                legend=alt.Legend(orient="bottom", columns=2, labelColor="black")
-            ),
-            order=alt.Order("Persentase", sort="ascending"), 
-            tooltip=[
-                alt.Tooltip("Subsektor", title="Subsektor"),
-                alt.Tooltip("Jumlah Usaha", title="Jumlah Usaha"),
-                alt.Tooltip("Persentase", format=".1%", title="Persentase")
-            ]
-        ).properties(
-            title=f"Distribusi Usaha Berdasarkan Subsektor di {selected_kecamatan}"
-        ).interactive()
-        
-        st.altair_chart(pie_subsektor, use_container_width=True)
-        
-    elif selected_subsektor != '(Semua Subsektor)':
-        st.info(f"Untuk melihat grafik 'Jumlah Usaha per Subsektor', pilih '**(Semua Subsektor)**' di filter subsektor.")
+            pie_subsektor = alt.Chart(subsektor_counts).mark_arc(outerRadius=120).encode(
+                theta=alt.Theta("Jumlah Usaha:Q", stack=True),
+                color=alt.Color(
+                    "Subsektor & Persen:N", 
+                    title="Subsektor", 
+                    legend=alt.Legend(orient="bottom", columns=2, labelColor="black")
+                ),
+                order=alt.Order("Persentase", sort="ascending"), 
+                tooltip=[
+                    alt.Tooltip("Subsektor", title="Subsektor"),
+                    alt.Tooltip("Jumlah Usaha", title="Jumlah Usaha"),
+                    alt.Tooltip("Persentase", format=".1%", title="Persentase")
+                ]
+            ).properties(
+                title=f"Distribusi Usaha Berdasarkan Subsektor di {selected_kecamatan}"
+            ).interactive()
+            
+            st.altair_chart(pie_subsektor, use_container_width=True)
+            
+        elif selected_subsektor != '(Semua Subsektor)':
+            st.info(f"Untuk melihat grafik 'Jumlah Usaha per Subsektor', pilih '**(Semua Subsektor)**' di filter subsektor.")
 
 
-with chart_col2:
-    if selected_kecamatan == 'Semua Kecamatan' and not filtered_df.empty:
-        st.markdown(f"#### Jumlah Usaha per Kecamatan untuk Subsektor {selected_subsektor}")
-        kecamatan_counts = filtered_df['KECAMATAN'].value_counts().reset_index()
-        kecamatan_counts.columns = ['Kecamatan', 'Jumlah Usaha']
-        
-        total_usaha_kecamatan = kecamatan_counts['Jumlah Usaha'].sum()
-        kecamatan_counts['Persentase'] = (kecamatan_counts['Jumlah Usaha'] / total_usaha_kecamatan)
+    with chart_col2:
+        if selected_kecamatan == 'Semua Kecamatan' and not filtered_df.empty:
+            st.markdown(f"#### Jumlah Usaha per Kecamatan untuk Subsektor {selected_subsektor}")
+            kecamatan_counts = filtered_df['KECAMATAN'].value_counts().reset_index()
+            kecamatan_counts.columns = ['Kecamatan', 'Jumlah Usaha']
+            
+            total_usaha_kecamatan = kecamatan_counts['Jumlah Usaha'].sum()
+            kecamatan_counts['Persentase'] = (kecamatan_counts['Jumlah Usaha'] / total_usaha_kecamatan)
 
-        kecamatan_counts['Kecamatan & Persen'] = kecamatan_counts.apply(
-            lambda row: f"{row['Kecamatan']} ({row['Persentase']:.1%})", axis=1
-        )
+            kecamatan_counts['Kecamatan & Persen'] = kecamatan_counts.apply(
+                lambda row: f"{row['Kecamatan']} ({row['Persentase']:.1%})", axis=1
+            )
 
-        pie_kecamatan = alt.Chart(kecamatan_counts).mark_arc(outerRadius=120).encode(
-            theta=alt.Theta("Jumlah Usaha:Q", stack=True),
-            color=alt.Color(
-                "Kecamatan & Persen:N", 
-                title="Kecamatan", 
-                legend=alt.Legend(orient="bottom", columns=2, titleLimit=300, symbolLimit=50, labelColor="black")
-            ),
-            order=alt.Order("Persentase", sort="ascending"), 
-            tooltip=[
-                alt.Tooltip("Kecamatan", title="Kecamatan"),
-                alt.Tooltip("Jumlah Usaha", title="Jumlah Usaha"),
-                alt.Tooltip("Persentase", format=".1%", title="Persentase")
-            ]
-        ).properties(
-            title=f"Distribusi Usaha Berdasarkan Kecamatan untuk Subsektor {selected_subsektor}"
-        ).interactive()
-        
-        st.altair_chart(pie_kecamatan, use_container_width=True)
-        
-    elif selected_kecamatan != 'Semua Kecamatan':
-        st.info(f"Untuk melihat grafik 'Jumlah Usaha per Kecamatan', pilih '**Semua Kecamatan**' di filter kecamatan.")
-
+            pie_kecamatan = alt.Chart(kecamatan_counts).mark_arc(outerRadius=120).encode(
+                theta=alt.Theta("Jumlah Usaha:Q", stack=True),
+                color=alt.Color(
+                    "Kecamatan & Persen:N", 
+                    title="Kecamatan", 
+                    legend=alt.Legend(orient="bottom", columns=2, titleLimit=300, symbolLimit=50, labelColor="black")
+                ),
+                order=alt.Order("Persentase", sort="ascending"), 
+                tooltip=[
+                    alt.Tooltip("Kecamatan", title="Kecamatan"),
+                    alt.Tooltip("Jumlah Usaha", title="Jumlah Usaha"),
+                    alt.Tooltip("Persentase", format=".1%", title="Persentase")
+                ]
+            ).properties(
+                title=f"Distribusi Usaha Berdasarkan Kecamatan untuk Subsektor {selected_subsektor}"
+            ).interactive()
+            
+            st.altair_chart(pie_kecamatan, use_container_width=True)
+            
+        elif selected_kecamatan != 'Semua Kecamatan':
+            st.info(f"Untuk melihat grafik 'Jumlah Usaha per Kecamatan', pilih '**Semua Kecamatan**' di filter kecamatan.")
 
 # --- FOOTER ---
 st.markdown("---")
 st.markdown("Aplikasi ini dikembangkan oleh Dinas Pariwisata Kabupaten Pasuruan untuk mempromosikan dan memetakan Usaha Ekonomi Kreatif di wilayah Kabupaten Pasuruan.")
 
+# --- BAGIAN VIDEO INTERAKTIF (GOOGLE DRIVE) ---
+st.markdown("---")
+st.subheader("📽️ Video Profil Ekonomi Kreatif")
 
+# Daftar video Google Drive yang dikelompokkan berdasarkan subsektor
+video_list = {
+    "Pilih Subsektor...": None, # Opsi default
+    "KULINER": {
+        "Aneka Jajanan Khas": "https://drive.google.com/file/d/1o_LHmFlx5uhAHp3iII7FJ5xH-T4rbrDQ/view?usp=sharing/preview",
+        "Resep Makanan Legendaris": "https://drive.google.com/file/d/VIDEO_ID_LAIN_ANDA/preview",
+        "Festival Kuliner Pasuruan": "https://drive.google.com/file/d/VIDEO_ID_LAIN_ANDA/preview"
+    },
+    "KRIYA": {
+        "Kerajinan Batik Pasuruan": "https://drive.google.com/file/d/VIDEO_ID_LAIN_ANDA/preview",
+        "Cara Membuat Keramik": "https://drive.google.com/file/d/VIDEO_ID_LAIN_ANDA/preview"
+    },
+    "FASHION": {
+        "Tren Busana Muslim Lokal": "https://drive.google.com/file/d/VIDEO_ID_LAIN_ANDA/preview"
+    }
+}
 
+# Selectbox pertama untuk memilih subsektor
+selected_subsektor_video = st.selectbox(
+    "📺 Pilih Subsektor:",
+    options=list(video_list.keys())
+)
+
+# Menampilkan selectbox video jika subsektor telah dipilih
+if selected_subsektor_video and video_list[selected_subsektor_video]:
+    video_options = list(video_list[selected_subsektor_video].keys())
+    selected_video_title = st.selectbox(
+        f"Pilih video untuk subsektor {selected_subsektor_video}:",
+        options=video_options
+    )
+
+    # Mengambil URL dari video yang dipilih
+    selected_url = video_list[selected_subsektor_video][selected_video_title]
+    
+    st.markdown(f"#### {selected_video_title}")
+    # Menggunakan st.components.v1.html untuk menampilkan iframe
+    components.html(f"""
+        <div style="text-align: center;">
+            <iframe src="{selected_url}" width="640" height="360" frameborder="0" allowfullscreen></iframe>
+        </div>
+    """, height=400)
+    st.caption(f"Ini adalah video profil tentang {selected_video_title}.")
+
+else:
+    st.info("Silakan pilih subsektor untuk melihat daftar video yang tersedia.")
+
+st.markdown("---")
+st.markdown("### <div style='text-align: center; color: #00695c;'>Link Pendaftaran Usaha</div>", unsafe_allow_html=True)
+st.markdown("### <div style='text-align: center;'><a href='https://forms.gle/uQYKcZYwEPzyadKZA'>https://forms.gle/uQYKcZYwEPzyadKZA</a></div>", unsafe_allow_html=True)
