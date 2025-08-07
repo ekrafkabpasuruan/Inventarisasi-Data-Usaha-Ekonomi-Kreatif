@@ -563,7 +563,7 @@ if selected_subsektor_video and video_list[selected_subsektor_video]:
         <div class="video-container">
             <iframe src="{selected_url}" frameborder="0" allowfullscreen></iframe>
         </div>
-    """, height=300)
+    """, height=500)
     st.caption(f"Ini adalah video profil tentang {selected_video_title}.")
 
 else:
@@ -572,3 +572,4 @@ else:
 st.markdown("---")
 st.markdown("Aplikasi ini dikembangkan oleh Dinas Pariwisata Kabupaten Pasuruan untuk mempromosikan dan memetakan Usaha Ekonomi Kreatif di wilayah Kabupaten Pasuruan.")
 st.markdown("##### Link Pendaftaran Ekonomi Kreatif: https://forms.gle/uQYKcZYwEPzyadKZA")
+
