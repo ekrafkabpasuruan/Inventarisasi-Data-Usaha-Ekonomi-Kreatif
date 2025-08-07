@@ -496,7 +496,7 @@ else:
 
 # --- BAGIAN VIDEO INTERAKTIF (GOOGLE DRIVE) ---
 st.markdown("---")
-st.subheader("📽️ Video Profil Ekonomi Kreatif")
+st.subheader("📽️ Galeri Profil Ekonomi Kreatif")
 
 # Daftar video Google Drive yang dikelompokkan berdasarkan subsektor
 video_list = {
@@ -507,6 +507,7 @@ video_list = {
     "APLIKASI": {
     },
     "ARSITEKTUR": {
+        "Arda KaryaWijaya" : "https://drive.google.com/file/d/1yQ9xXU1xcUext8Jh7zFC9LEVKN0KSxOm/preview"
     },
     "DESAIN INTERIOR": {
     },
@@ -515,6 +516,7 @@ video_list = {
     "DESAIN PRODUK": {
     },
     "FASHION": {
+        "Faiza Bordir Bangil" : "https://drive.google.com/file/d/1-eS_PSwkxeVQkLClTafgZRVGG-Iqzodj/preview"
     },
     "FILM, ANIMASI, VIDEO": {
     },
@@ -523,6 +525,7 @@ video_list = {
     "KRIYA": {
     },
     "KULINER": {
+        "Bakpia Mami Pusat" : "https://drive.google.com/file/d/1Fi5zSclj1MWL9sEMLYHF2bSZBTtZzwJ5/preview"
     },
     "MUSIK": {
     },
@@ -535,6 +538,7 @@ video_list = {
     "SENI PERTUNJUKAN": {
     },
     "SENI RUPA": {
+        "Dian Art Studio" : "https://drive.google.com/file/d/18II-HJVdLf5m-uId7WJm3HNMTTfkYCCP/preview"
     },
     "TELEVISI & RADIO": {
     },
