@@ -563,7 +563,7 @@ if selected_subsektor_video and video_list[selected_subsektor_video]:
         <div class="video-container">
             <iframe src="{selected_url}" frameborder="0" allowfullscreen></iframe>
         </div>
-    """, height=0)
+    """, height=300)
     st.caption(f"Ini adalah video profil tentang {selected_video_title}.")
 
 else:
