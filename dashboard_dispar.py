@@ -540,33 +540,40 @@ video_list = {
     },
 }
 
-# Selectbox pertama untuk memilih subsektor
+# Menampilkan selectbox video
 selected_subsektor_video = st.selectbox(
     "📺 Pilih Subsektor:",
     options=list(video_list.keys())
 )
 
-# Menampilkan selectbox video jika subsektor telah dipilih
-if selected_subsektor_video and video_list[selected_subsektor_video]:
-    video_options = list(video_list[selected_subsektor_video].keys())
-    selected_video_title = st.selectbox(
-        f"Pilih video untuk subsektor {selected_subsektor_video}:",
-        options=video_options
-    )
+# --- LOGIKA KOREKSI ---
+# Cek apakah pengguna telah memilih subsektor selain opsi default
+if selected_subsektor_video and selected_subsektor_video != "Pilih Subsektor...":
+    # Cek apakah subsektor yang dipilih memiliki daftar video
+    if video_list[selected_subsektor_video]:
+        video_options = list(video_list[selected_subsektor_video].keys())
+        selected_video_title = st.selectbox(
+            f"Pilih video untuk subsektor {selected_subsektor_video}:",
+            options=video_options
+        )
 
-    # Mengambil URL dari video yang dipilih
-    selected_url = video_list[selected_subsektor_video][selected_video_title]
-    
-    st.markdown(f"#### {selected_video_title}")
-    # Menggunakan st.components.v1.html dengan kontainer responsif
-    components.html(f"""
-        <div class="video-container">
-            <iframe src="{selected_url}" frameborder="0" allowfullscreen></iframe>
-        </div>
-    """, height=185)
-    st.caption(f"Ini adalah video profil tentang {selected_video_title}.")
+        # Mengambil URL dari video yang dipilih
+        selected_url = video_list[selected_subsektor_video][selected_video_title]
+        
+        st.markdown(f"#### {selected_video_title}")
+        # Menggunakan st.components.v1.html dengan kontainer responsif
+        components.html(f"""
+            <div class="video-container">
+                <iframe src="{selected_url}" frameborder="0" allowfullscreen></iframe>
+            </div>
+        """, height=185)
+        st.caption(f"Ini adalah video profil tentang {selected_video_title}.")
+    else:
+        # Tampilkan pesan jika subsektor tidak memiliki video
+        st.info(f"Tidak ada video yang tersedia untuk subsektor **{selected_subsektor_video}**.")
 
 else:
+    # Tampilkan pesan default saat belum ada subsektor yang dipilih
     st.info("Silakan pilih subsektor untuk melihat daftar video yang tersedia.")
 
 st.markdown("---")
