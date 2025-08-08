@@ -348,7 +348,8 @@ if filtered_df.empty:
     st.warning("⚠️ Tidak ada data yang cocok dengan pilihan filter Anda. Coba pilih filter lain.")
 else:
     st.subheader("Ringkasan Data Terfilter")
-    metric_col1, metric_col2 = st.columns(2)
+    # Menggunakan 3 kolom untuk menampilkan metrik
+    metric_col1, metric_col2, metric_col3 = st.columns(3)
     
     with metric_col1:
         total_usaha_filtered = len(filtered_df)
@@ -361,6 +362,11 @@ else:
         else:
             st.info("ℹ️ Kolom 'TENAGA KERJA TOTAL' tidak tersedia untuk perhitungan tenaga kerja.")
         st.metric("Total Tenaga Kerja", f"{int(total_tenaga_kerja_filtered):,} orang")
+    
+    # Tambahkan metrik untuk subsektor aktif
+    with metric_col3:
+        st.metric("Subsektor Aktif", selected_subsektor)
+
 
     st.markdown("---")
 
@@ -412,8 +418,8 @@ else:
                 ).interactive()
                 st.altair_chart(chart_jenis_usaha, use_container_width=True)
 
-    else:
-        st.info("ℹ️ Kolom 'JENIS USAHA' tidak ditemukan atau kosong. Fitur ini tidak dapat ditampilkan.")
+        else:
+            st.info("ℹ️ Kolom 'JENIS USAHA' tidak ditemukan atau kosong. Fitur ini tidak dapat ditampilkan.")
     
     st.markdown("---")
 
@@ -570,7 +576,7 @@ if selected_subsektor_video and selected_subsektor_video != "Pilih Subsektor..."
             <div class="video-container">
                 <iframe src="{selected_url}" frameborder="0" allowfullscreen></iframe>
             </div>
-        """, height=185)
+        """, height=185) # Ini adalah perbaikan utamanya!
         st.caption(f"Ini adalah video profil tentang {selected_video_title}.")
     else:
         # Tampilkan pesan jika subsektor tidak memiliki video
