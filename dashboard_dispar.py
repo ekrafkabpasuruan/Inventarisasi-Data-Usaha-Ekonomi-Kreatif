@@ -509,7 +509,7 @@ video_list = {
     "Pilih Subsektor...": None, 
     "MONEV": {
         "Monev 29-juli-2025": "https://drive.google.com/file/d/1o_LHmFlx5uhAHp3iII7FJ5xH-T4rbrDQ/preview",
-        "Monev 13-Agustus-2025": "https://drive.google.com/file/d/1pIxeDrdSXhVJKkuYKX3J7XdlcPCPQ_rI/preview"
+        "Monev 13-Agustus-2025": "https://drive.google.com/file/d/1pIxeDrdSXhVJKkuYKX3J7XdlcPCPQ_rI/preview",
     },
     "APLIKASI": {
     },
@@ -564,7 +564,7 @@ if selected_subsektor_video and selected_subsektor_video != "Pilih Subsektor..."
     if video_list[selected_subsektor_video]:
         video_options = list(video_list[selected_subsektor_video].keys())
         selected_video_title = st.selectbox(
-            f"Pilih video untuk subsektor {selected_subsektor_video}:",
+            f"Pilih profile untuk subsektor {selected_subsektor_video}:",
             options=video_options
         )
 
@@ -578,17 +578,15 @@ if selected_subsektor_video and selected_subsektor_video != "Pilih Subsektor..."
                 <iframe src="{selected_url}" frameborder="0" allowfullscreen></iframe>
             </div>
         """, height=185) # Ini adalah perbaikan utamanya!
-        st.caption(f"Ini adalah video profil tentang {selected_video_title}.")
+        st.caption(f"Ini adalah profil tentang {selected_video_title}.")
     else:
         # Tampilkan pesan jika subsektor tidak memiliki video
-        st.info(f"Tidak ada video yang tersedia untuk subsektor **{selected_subsektor_video}**.")
+        st.info(f"Tidak ada profile yang tersedia untuk subsektor **{selected_subsektor_video}**.")
 
 else:
     # Tampilkan pesan default saat belum ada subsektor yang dipilih
-    st.info("Silakan pilih subsektor untuk melihat daftar video yang tersedia.")
+    st.info("Silakan pilih subsektor untuk melihat daftar profile yang tersedia.")
 
 st.markdown("---")
 st.markdown("Aplikasi ini dikembangkan oleh Dinas Pariwisata Kabupaten Pasuruan untuk mempromosikan dan memetakan Usaha Ekonomi Kreatif di wilayah Kabupaten Pasuruan.")
 st.markdown("##### Link Pendaftaran Ekonomi Kreatif: https://forms.gle/uQYKcZYwEPzyadKZA")
-
-
