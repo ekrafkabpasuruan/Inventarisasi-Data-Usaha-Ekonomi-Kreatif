@@ -509,6 +509,7 @@ video_list = {
     "Pilih Subsektor...": None, 
     "MONEV": {
         "Monev 29-juli-2025": "https://drive.google.com/file/d/1o_LHmFlx5uhAHp3iII7FJ5xH-T4rbrDQ/preview",
+        "Monev 13-Agustus-2025": https://drive.google.com/file/d/1pIxeDrdSXhVJKkuYKX3J7XdlcPCPQ_rI/preview"
     },
     "APLIKASI": {
     },
@@ -589,3 +590,4 @@ else:
 st.markdown("---")
 st.markdown("Aplikasi ini dikembangkan oleh Dinas Pariwisata Kabupaten Pasuruan untuk mempromosikan dan memetakan Usaha Ekonomi Kreatif di wilayah Kabupaten Pasuruan.")
 st.markdown("##### Link Pendaftaran Ekonomi Kreatif: https://forms.gle/uQYKcZYwEPzyadKZA")
+
