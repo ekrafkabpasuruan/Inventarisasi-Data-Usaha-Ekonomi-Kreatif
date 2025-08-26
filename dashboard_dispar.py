@@ -625,7 +625,7 @@ if st.button('Daftar Usaha Ekonomi Kreatif Sekarang!', use_container_width=True)
 
 if st.session_state['show_form']:
     st.markdown("---")
-    st.subheader("📝 Formulir Pendaftaran Usaha Baru")
+    st.subheader("📝 Formulir Pendataan")
 
     # URL API Google Apps Script
     # GANTI URL INI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA YANG SUDAH DI-DEPLOY
@@ -664,7 +664,7 @@ if st.session_state['show_form']:
             )
         
         st.markdown("---")
-        submit_button = st.form_submit_button(label='🚀 Kirim Data Pendaftaran', use_container_width=True)
+        submit_button = st.form_submit_button(label='🚀 Kirim Data ', use_container_width=True)
 
         if submit_button:
             # Cek validasi sederhana
@@ -699,3 +699,4 @@ if st.session_state['show_form']:
 
 st.markdown("---")
 st.markdown("Aplikasi ini dikembangkan oleh Dinas Pariwisata Kabupaten Pasuruan untuk mempromosikan dan memetakan Usaha Ekonomi Kreatif di wilayah Kabupaten Pasuruan.")
+
