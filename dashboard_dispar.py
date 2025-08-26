@@ -620,7 +620,7 @@ if st.session_state['show_form']:
 
     # URL API Google Apps Script
     # Ganti URL ini dengan URL Web app Google Apps Script Anda yang sudah benar
-    form_url = "https://script.google.com/macros/s/AKfycbwDXyrLQNdRVvz3PYrV-IlPLl49AkfXXdDfmRQNQGC0-NliQ1jPK3tXKgb_GDc6-r3Zxg/exec"
+    form_url = "https://script.google.com/macros/s/AKfycbyXW126fmGgX4LOgv6LZdwsWBur-hnTRe9lcmEVHvQA-2UHhvfwYZK9jxS_mSSwfBn_IQ/exec"
 
     with st.form(key='registration_form'):
         st.markdown("**Informasi Dasar Usaha**")
@@ -682,7 +682,7 @@ if st.session_state['show_form']:
                         for key in st.session_state:
                             if key in ['nama_usaha', 'alamat', 'kontak', 'jenis_usaha', 'subsektor', 'tenaga_kerja', 'nib', 'sertifikat_haki']:
                                 del st.session_state[key]
-                        st.experimental_rerun() # Memuat ulang halaman
+                        st.rerun() # Memuat ulang halaman
                     else:
                         st.error("❌ Pendaftaran gagal.")
                 except requests.exceptions.RequestException as e:
@@ -690,3 +690,4 @@ if st.session_state['show_form']:
 
 st.markdown("---")
 st.markdown("Aplikasi ini dikembangkan oleh Dinas Pariwisata Kabupaten Pasuruan untuk mempromosikan dan memetakan Usaha Ekonomi Kreatif di wilayah Kabupaten Pasuruan.")
+
