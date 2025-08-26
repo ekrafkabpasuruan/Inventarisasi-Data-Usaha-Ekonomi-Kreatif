@@ -11,17 +11,17 @@ import json
 st.set_page_config(
     page_title="DISPAR KAB. PASURUAN",
     layout="wide",
-    page_icon="https://i.pinimg.com/736x/34/e4/ba/34e4baa62df5cfe22ccb43f43567978d.jpg" 
+    page_icon="https://i.pinimg.com/736x/34/e4/ba/34e4baa62df5cfe22ccb43f43567978d.jpg"
 )
 
 # --- STYLING CSS KUSTOM ---
 st.markdown("""
     <style>
     .stApp {
-        background-color: #f0fdf4; 
+        background-color: #f0fdf4;
     }
     .main {
-        background-color: #f9fff9; 
+        background-color: #f9fff9;
         padding: 2rem;
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -29,18 +29,18 @@ st.markdown("""
 
     /* Judul */
     h1, h2, h3, h4 {
-        color: #00695c; 
+        color: #00695c;
         font-family: 'Segoe UI', sans-serif;
         font-weight: 600;
     }
 
     /* Subheader dan Keterangan */
     .st-emotion-cache-10qnfpr {
-        color: #004d40; 
+        color: #004d40;
         font-weight: 500;
     }
     .st-emotion-cache-nahz7x {
-        color: #333333; 
+        color: #333333;
         font-style: italic;
     }
 
@@ -66,7 +66,7 @@ st.markdown("""
 
     /* Styling metrik */
     [data-testid="stMetric"] {
-        background-color: #e0f2f1; 
+        background-color: #e0f2f1;
         border-radius: 8px;
         padding: 1rem;
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
@@ -85,7 +85,7 @@ st.markdown("""
 
     /* Styling expander */
     .streamlit-expanderHeader {
-        background-color: #b2dfdb; 
+        background-color: #b2dfdb;
         color: #004d40;
         font-weight: 600;
         border-radius: 5px;
@@ -106,24 +106,24 @@ st.markdown("""
         overflow: hidden;
     }
 
-    .st-emotion-cache-1c7y2kd p { 
-        background-color: #e8f5e9; 
-        color: #2e7d32; 
-        border-left: 5px solid #66bb6a; 
+    .st-emotion-cache-1c7y2kd p {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+        border-left: 5px solid #66bb6a;
         padding: 10px;
         border-radius: 5px;
     }
-    .st-emotion-cache-1ldn2y5 p { 
-        background-color: #fffde7; 
-        color: #ffb300; 
-        border-left: 5px solid #ffd54f; 
+    .st-emotion-cache-1ldn2y5 p {
+        background-color: #fffde7;
+        color: #ffb300;
+        border-left: 5px solid #ffd54f;
         padding: 10px;
         border-radius: 5px;
     }
-    .st-emotion-cache-12fmj2r p { 
-        background-color: #ffebee; 
-        color: #d32f2f; 
-        border-left: 5px solid #ef5350; 
+    .st-emotion-cache-12fmj2r p {
+        background-color: #ffebee;
+        color: #d32f2f;
+        border-left: 5px solid #ef5350;
         padding: 10px;
         border-radius: 5px;
     }
@@ -422,7 +422,7 @@ else:
                     color=alt.value("#26a69a")
                 )
                 text = bars.mark_text(
-                    align='right', 
+                    align='right',
                     baseline='middle',
                     dx=-1
                 ).encode(
@@ -460,11 +460,11 @@ else:
             pie_subsektor = alt.Chart(subsektor_counts).mark_arc(outerRadius=120).encode(
                 theta=alt.Theta("Jumlah Usaha:Q", stack=True),
                 color=alt.Color(
-                    "Subsektor & Persen:N", 
-                    title="Subsektor", 
+                    "Subsektor & Persen:N",
+                    title="Subsektor",
                     legend=alt.Legend(orient="bottom", columns=2, labelColor="black")
                 ),
-                order=alt.Order("Persentase", sort="ascending"), 
+                order=alt.Order("Persentase", sort="ascending"),
                 tooltip=[
                     alt.Tooltip("Subsektor", title="Subsektor"),
                     alt.Tooltip("Jumlah Usaha", title="Jumlah Usaha"),
@@ -496,11 +496,11 @@ else:
             pie_kecamatan = alt.Chart(kecamatan_counts).mark_arc(outerRadius=120).encode(
                 theta=alt.Theta("Jumlah Usaha:Q", stack=True),
                 color=alt.Color(
-                    "Kecamatan & Persen:N", 
-                    title="Kecamatan", 
+                    "Kecamatan & Persen:N",
+                    title="Kecamatan",
                     legend=alt.Legend(orient="bottom", columns=2, titleLimit=300, symbolLimit=50, labelColor="black")
                 ),
-                order=alt.Order("Persentase", sort="ascending"), 
+                order=alt.Order("Persentase", sort="ascending"),
                 tooltip=[
                     alt.Tooltip("Kecamatan", title="Kecamatan"),
                     alt.Tooltip("Jumlah Usaha", title="Jumlah Usaha"),
@@ -522,7 +522,7 @@ st.subheader("📽️ Galeri Profil Ekonomi Kreatif")
 
 # Daftar video Google Drive yang dikelompokkan berdasarkan subsektor
 video_list = {
-    "Pilih Subsektor...": None, 
+    "Pilih Subsektor...": None,
     "MONEV": {
         "Monev 29-juli-2025": "https://drive.google.com/file/d/1o_LHmFlx5uhAHp3iII7FJ5xH-T4rbrDQ/preview",
         "Monev 13-Agustus-2025": "https://drive.google.com/file/d/1pIxeDrdSXhVJKkuYKX3J7XdlcPCPQ_rI/preview",
@@ -573,25 +573,34 @@ selected_subsektor_video = st.selectbox(
     options=list(video_list.keys())
 )
 
+# --- LOGIKA KOREKSI ---
+# Cek apakah pengguna telah memilih subsektor selain opsi default
 if selected_subsektor_video and selected_subsektor_video != "Pilih Subsektor...":
+    # Cek apakah subsektor yang dipilih memiliki daftar video
     if video_list[selected_subsektor_video]:
         video_options = list(video_list[selected_subsektor_video].keys())
         selected_video_title = st.selectbox(
             f"Pilih profile untuk subsektor {selected_subsektor_video}:",
             options=video_options
         )
+
+        # Mengambil URL dari video yang dipilih
         selected_url = video_list[selected_subsektor_video][selected_video_title]
         
         st.markdown(f"#### {selected_video_title}")
+        # Menggunakan st.components.v1.html dengan kontainer responsif
         components.html(f"""
             <div class="video-container">
                 <iframe src="{selected_url}" frameborder="0" allowfullscreen></iframe>
             </div>
-        """, height=185) 
+        """, height=185)
         st.caption(f"Ini adalah profil tentang {selected_video_title}.")
     else:
+        # Tampilkan pesan jika subsektor tidak memiliki video
         st.info(f"Tidak ada profile yang tersedia untuk subsektor **{selected_subsektor_video}**.")
+
 else:
+    # Tampilkan pesan default saat belum ada subsektor yang dipilih
     st.info("Silakan pilih subsektor untuk melihat daftar profile yang tersedia.")
 
 st.markdown("---")
@@ -616,11 +625,11 @@ if st.button('Daftar Usaha Ekonomi Kreatif Sekarang!', use_container_width=True)
 
 if st.session_state['show_form']:
     st.markdown("---")
-    st.subheader("📝 Formulir Pendataan ")
+    st.subheader("📝 Formulir Pendaftaran Usaha Baru")
 
     # URL API Google Apps Script
-    # Ganti URL ini dengan URL Web app Google Apps Script Anda yang sudah benar
-    form_url = "https://script.google.com/macros/s/AKfycby3-yTUMkdMxrCUtvxvXVMZyEbYZvdsDFUoy5C3JgT4rQpAas0itNIEuDDkKpJ9UzBo9Q/exec"
+    # GANTI URL INI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA YANG SUDAH DI-DEPLOY
+    form_url = "https://script.google.com/macros/s/AKfycbz7EburtlhxORmFc4fqCNW-oTyjhs1mf48FL5uXLTV0YSh8ZzZ9QTWyg62Me86TRmQ7/exec"
 
     with st.form(key='registration_form'):
         st.markdown("**Informasi Dasar Usaha**")
@@ -639,8 +648,8 @@ if st.session_state['show_form']:
             # Dropdown untuk Subsektor
             subsektor_list = sorted(list(file_ids.values()))
             subsektor = st.selectbox(
-                "Subsektor", 
-                options=["-- Pilih Subsektor --"] + subsektor_list, 
+                "Subsektor",
+                options=["-- Pilih Subsektor --"] + subsektor_list,
                 key="subsektor"
             )
         with col_form4:
@@ -655,7 +664,7 @@ if st.session_state['show_form']:
             )
         
         st.markdown("---")
-        submit_button = st.form_submit_button(label='🚀 Kirim Data ', use_container_width=True)
+        submit_button = st.form_submit_button(label='🚀 Kirim Data Pendaftaran', use_container_width=True)
 
         if submit_button:
             # Cek validasi sederhana
@@ -682,14 +691,11 @@ if st.session_state['show_form']:
                         for key in st.session_state:
                             if key in ['nama_usaha', 'alamat', 'kontak', 'jenis_usaha', 'subsektor', 'tenaga_kerja', 'nib', 'sertifikat_haki']:
                                 del st.session_state[key]
-                        st.rerun() # Memuat ulang halaman
+                        st.rerun() # Menggunakan st.rerun() yang sudah dikoreksi
                     else:
-                        st.error("❌ Pendaftaran gagal.")
+                        st.error("❌ Pendaftaran gagal. Coba lagi atau periksa konfigurasi API Anda.")
                 except requests.exceptions.RequestException as e:
                     st.error(f"Terjadi kesalahan koneksi: {e}")
 
 st.markdown("---")
 st.markdown("Aplikasi ini dikembangkan oleh Dinas Pariwisata Kabupaten Pasuruan untuk mempromosikan dan memetakan Usaha Ekonomi Kreatif di wilayah Kabupaten Pasuruan.")
-
-
-
