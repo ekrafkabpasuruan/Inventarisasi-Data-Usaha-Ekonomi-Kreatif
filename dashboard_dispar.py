@@ -5,6 +5,7 @@ import requests
 import io
 import re
 import streamlit.components.v1 as components
+import json
 
 # --- KONFIGURASI HALAMAN ---
 st.set_page_config(
@@ -126,7 +127,7 @@ st.markdown("""
         padding: 10px;
         border-radius: 5px;
     }
-
+    
     /* Tambahkan CSS responsif untuk gambar */
     .logo-container {
         display: flex;
@@ -167,15 +168,30 @@ st.markdown("""
     .st-emotion-cache-17lsv9n {
         text-align: center !important;
     }
-
+    
+    /* Styling khusus untuk bagian pendaftaran */
+    .registration-section {
+        background-color: #e8f5e9;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        border: 1px solid #c8e6c9;
+    }
+    .stButton>button {
+        background-color: #4CAF50;
+        color: white;
+        font-weight: bold;
+    }
+    .form-title {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
     </style>
 """, unsafe_allow_html=True)
 
 # --- BAGIAN HEADER ---
-# Ubah rasio kolom menjadi fleksibel
 col1, col2 = st.columns([0.2, 0.8])
 with col1:
-    # Gunakan HTML dan CSS untuk logo agar responsif
     st.markdown("""
         <div class="logo-container">
             <img src="https://i.pinimg.com/736x/34/e4/ba/34e4baa62df5cfe22ccb43f43567978d.jpg" alt="Logo DISPAR KAB. PASURUAN">
@@ -381,7 +397,7 @@ else:
     st.markdown("---")
 
     # --- JENIS USAHA PALING DOMINAN ---
-    st.subheader("🏆 Jenis Usaha Paling Domina")
+    st.subheader("🏆 Jenis Usaha Paling Dominan")
     if 'JENIS USAHA' in filtered_df.columns and not filtered_df['JENIS USAHA'].empty:
         dominan_df = (
             filtered_df.groupby("JENIS USAHA")
@@ -557,36 +573,120 @@ selected_subsektor_video = st.selectbox(
     options=list(video_list.keys())
 )
 
-# --- LOGIKA KOREKSI ---
-# Cek apakah pengguna telah memilih subsektor selain opsi default
 if selected_subsektor_video and selected_subsektor_video != "Pilih Subsektor...":
-    # Cek apakah subsektor yang dipilih memiliki daftar video
     if video_list[selected_subsektor_video]:
         video_options = list(video_list[selected_subsektor_video].keys())
         selected_video_title = st.selectbox(
             f"Pilih profile untuk subsektor {selected_subsektor_video}:",
             options=video_options
         )
-
-        # Mengambil URL dari video yang dipilih
         selected_url = video_list[selected_subsektor_video][selected_video_title]
         
         st.markdown(f"#### {selected_video_title}")
-        # Menggunakan st.components.v1.html dengan kontainer responsif
         components.html(f"""
             <div class="video-container">
                 <iframe src="{selected_url}" frameborder="0" allowfullscreen></iframe>
             </div>
-        """, height=185) # Ini adalah perbaikan utamanya!
+        """, height=185) 
         st.caption(f"Ini adalah profil tentang {selected_video_title}.")
     else:
-        # Tampilkan pesan jika subsektor tidak memiliki video
         st.info(f"Tidak ada profile yang tersedia untuk subsektor **{selected_subsektor_video}**.")
-
 else:
-    # Tampilkan pesan default saat belum ada subsektor yang dipilih
     st.info("Silakan pilih subsektor untuk melihat daftar profile yang tersedia.")
 
 st.markdown("---")
+
+# --- BAGIAN REGISTRASI INTERAKTIF BARU ---
+st.markdown("""
+    <div class="registration-section">
+        <div class="form-title">
+            <h3>Punya Usaha Kreatif di Kabupaten Pasuruan?</h3>
+            <p>Ayo daftarkan usaha Anda dan bergabunglah dengan ekosistem ekonomi kreatif kami!</p>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
+
+# Inisialisasi session state jika belum ada
+if 'show_form' not in st.session_state:
+    st.session_state['show_form'] = False
+
+# Tombol untuk menampilkan/menyembunyikan formulir
+if st.button('Daftar Usaha Ekonomi Kreatif Sekarang!', use_container_width=True):
+    st.session_state['show_form'] = not st.session_state['show_form']
+
+if st.session_state['show_form']:
+    st.markdown("---")
+    st.subheader("📝 Formulir Pendataan ")
+
+    # URL API Google Apps Script
+    # Ganti URL ini dengan URL Web app Google Apps Script Anda yang sudah benar
+    form_url = "https://script.google.com/macros/s/AKfycbwDXyrLQNdRVvz3PYrV-IlPLl49AkfXXdDfmRQNQGC0-NliQ1jPK3tXKgb_GDc6-r3Zxg/exec"
+
+    with st.form(key='registration_form'):
+        st.markdown("**Informasi Dasar Usaha**")
+        col_form1, col_form2 = st.columns(2)
+        with col_form1:
+            nama_usaha = st.text_input("Nama Usaha", key="nama_usaha", placeholder="Contoh: Sanggar Batik Pasuruan")
+            alamat = st.text_input("Alamat Lengkap", help="Sertakan nama kecamatan dan kabupaten/kota", key="alamat", placeholder="Contoh: Jl. Diponegoro No. 12, Kec. Prigen, Kab. Pasuruan")
+        with col_form2:
+            kontak = st.text_input("Nomor Kontak / WA", help="Contoh: 081234567890", key="kontak", placeholder="08XX-XXXX-XXXX")
+            jenis_usaha = st.text_input("Jenis Usaha", help="Contoh: Kerajinan Anyaman, Jasa Desain Grafis", key="jenis_usaha", placeholder="Kerajinan Tangan, Jasa Desain, dsb.")
+
+        st.markdown("---")
+        st.markdown("**Detail Kategori & Legalitas**")
+        col_form3, col_form4, col_form5 = st.columns(3)
+        with col_form3:
+            # Dropdown untuk Subsektor
+            subsektor_list = sorted(list(file_ids.values()))
+            subsektor = st.selectbox(
+                "Subsektor", 
+                options=["-- Pilih Subsektor --"] + subsektor_list, 
+                key="subsektor"
+            )
+        with col_form4:
+            tenaga_kerja_total = st.number_input("Total Tenaga Kerja", min_value=0, key="tenaga_kerja", help="Jumlah total karyawan (termasuk pemilik).")
+        with col_form5:
+            # Kolom untuk NIB dan HAKI
+            nib = st.text_input("Nomor Induk Berusaha (NIB)", key="nib", placeholder="Contoh: 1234567890")
+            sertifikat_haki = st.selectbox(
+                "Sertifikat HAKI",
+                options=["-- Pilih Opsi --", "Punya", "Tidak Punya"],
+                key="sertifikat_haki"
+            )
+        
+        st.markdown("---")
+        submit_button = st.form_submit_button(label='🚀 Kirim Data ', use_container_width=True)
+
+        if submit_button:
+            # Cek validasi sederhana
+            if not nama_usaha or not alamat or subsektor == "-- Pilih Subsektor --":
+                st.error("⚠️ Harap lengkapi semua data dengan benar. Pastikan Nama Usaha, Alamat, dan Subsektor terisi.")
+            else:
+                data = {
+                    'nama_usaha': str(nama_usaha),
+                    'alamat': str(alamat),
+                    'kontak': str(kontak),
+                    'jenis_usaha': str(jenis_usaha),
+                    'subsektor': str(subsektor),
+                    'tenaga_kerja_total': str(tenaga_kerja_total),
+                    'nib': str(nib),
+                    'sertifikat_haki': str(sertifikat_haki)
+                }
+                try:
+                    response = requests.post(form_url, data=data, timeout=10)
+                    if response.status_code == 200:
+                        st.success("✅ Pendaftaran berhasil! Data Anda telah terkirim.")
+                        # Sembunyikan formulir setelah pengiriman berhasil
+                        st.session_state['show_form'] = False
+                        # Menghapus inputan formulir
+                        for key in st.session_state:
+                            if key in ['nama_usaha', 'alamat', 'kontak', 'jenis_usaha', 'subsektor', 'tenaga_kerja', 'nib', 'sertifikat_haki']:
+                                del st.session_state[key]
+                        st.experimental_rerun() # Memuat ulang halaman
+                    else:
+                        st.error("❌ Pendaftaran gagal.")
+                except requests.exceptions.RequestException as e:
+                    st.error(f"Terjadi kesalahan koneksi: {e}")
+
+st.markdown("---")
 st.markdown("Aplikasi ini dikembangkan oleh Dinas Pariwisata Kabupaten Pasuruan untuk mempromosikan dan memetakan Usaha Ekonomi Kreatif di wilayah Kabupaten Pasuruan.")
-st.markdown("##### Link Pendaftaran Ekonomi Kreatif: https://forms.gle/uQYKcZYwEPzyadKZA")
