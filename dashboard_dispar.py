@@ -620,7 +620,7 @@ if st.session_state['show_form']:
 
     # URL API Google Apps Script
     # Ganti URL ini dengan URL Web app Google Apps Script Anda yang sudah benar
-    form_url = "https://script.google.com/macros/s/AKfycbzmjcl-68ahbf3jKjZ94xNL6x5aolwk1UleqzUBFY2oVvuDzhrWPJzUeW8oPiyuwpp-Nw/exec"
+    form_url = "https://script.google.com/macros/s/AKfycby3-yTUMkdMxrCUtvxvXVMZyEbYZvdsDFUoy5C3JgT4rQpAas0itNIEuDDkKpJ9UzBo9Q/exec"
 
     with st.form(key='registration_form'):
         st.markdown("**Informasi Dasar Usaha**")
@@ -690,5 +690,6 @@ if st.session_state['show_form']:
 
 st.markdown("---")
 st.markdown("Aplikasi ini dikembangkan oleh Dinas Pariwisata Kabupaten Pasuruan untuk mempromosikan dan memetakan Usaha Ekonomi Kreatif di wilayah Kabupaten Pasuruan.")
+
 
 
