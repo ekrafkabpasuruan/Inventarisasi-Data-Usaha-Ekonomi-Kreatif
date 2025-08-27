@@ -210,7 +210,7 @@ file_ids = {
     '1oP6IwzDosaP4qofPpDGiUpgBumcHcofY': 'PENERBITAN',
     '1TmUkS_Q9wkKCilGVI7qW-dggg_LP2L9P': 'PENGEMBANG PERMAINAN',
     '1cB9xFsrg_9bgHo4YK1J_OxdjjpdyULM_': 'PERIKLANAN',
-    '1HGr4sxrIBmpiIBgKswEv0riR9ItkQvST': 'SENI PERTUNJUKAN',
+    '1szarAEXUuvA-gvd1XT8quBDjTBCHhs6W': 'SENI PERTUNJUKAN',
     '1sEWP3mBIfuzQSa8f_XqVx_FJw2u6Mal6': 'SENI RUPA',
     '1QnBGnU_vRWBQN3_zjpLmw073cqQrUdkc': 'TELEVISI & RADIO',
     '1d1slXI7e92x2uBQbS477UPW3kmhSZGmY': 'ARSITEKTUR',
@@ -699,6 +699,7 @@ if st.session_state['show_form']:
 
 st.markdown("---")
 st.markdown("Aplikasi ini dikembangkan oleh Dinas Pariwisata Kabupaten Pasuruan untuk mempromosikan dan memetakan Usaha Ekonomi Kreatif di wilayah Kabupaten Pasuruan.")
+
 
 
 
