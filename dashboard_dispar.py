@@ -220,7 +220,7 @@ file_ids = {
     '1F61lN4gust55u5QwfStbb7hmO7HciAM4': 'FASHION',
     '18WffL9Z4s9IQIt325K02q4Vkc-KnoIpV': 'FILM, ANIMASI, VIDEO',
     '1upaDVhBb6pI72YkrbvPLXKopAO4mUBu4': 'FOTOGRAFI',
-    '1yLaUfZeM-gByCvUE55R4CWEjEEv2H7Cn': 'KRIYA',
+    '1_E6EJsA2sTCTWfcsVUCUzWs3qKmiylMS': 'KRIYA',
     '1OfkA--rGJmyZqUf8Qhhw_EwjJDFV5oL1': 'APLIKASI',
 }
 
@@ -699,6 +699,7 @@ if st.session_state['show_form']:
 
 st.markdown("---")
 st.markdown("Aplikasi ini dikembangkan oleh Dinas Pariwisata Kabupaten Pasuruan untuk mempromosikan dan memetakan Usaha Ekonomi Kreatif di wilayah Kabupaten Pasuruan.")
+
 
 
 
